@@ -6,7 +6,9 @@ module load miniconda3
 module load cblaster
 module load diamond
 
+mkdir DMND
+
 for s in *.gbk; do
-cblaster makedb ${s} -n ${s}_ref
+cblaster makedb /strains/${s} -n /DMND/${s}_ref
 done
 
