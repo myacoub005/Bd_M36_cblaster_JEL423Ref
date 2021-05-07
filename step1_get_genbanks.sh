@@ -6,4 +6,4 @@ mkdir strains
 ln -s /bigdata/stajichlab/shared/projects/Chytrid/Bd_popgen/annotate_scaffold/funannotate 
 
 #add the strain gbks to one location
-cp /funannotate/*/update_results/*.gbk /strains/
+cp funannotate/*/update_results/*.gbk strains/
