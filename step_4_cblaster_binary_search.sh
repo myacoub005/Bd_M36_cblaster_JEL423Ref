@@ -6,6 +6,8 @@ module load miniconda3
 module load diamond
 module load cblaster
 
+mkdir binary_results
+
 for q in *.gbk; do
   for s in *.dmnd; do
       cblaster search -m local -d DMND/${s} -qf gbk_queries/${q} -me 1e-100 -mi 90 -b binary_results/${s}_${q}_output.csv -bde ","
