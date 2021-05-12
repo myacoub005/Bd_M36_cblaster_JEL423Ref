@@ -19,4 +19,4 @@ hmmsearch --domtbl M36.Hmmsearch.hits.domtbl -E 1e-15 Peptidase_M36.hmm allseqs.
 grep -h -v '^#' M36.Hmmsearch.hits.domtbl | awk '{print $1}' | sort | uniq | esl-sfetch -f allseqs.aa -> M36.hits.aa.fa
 
 #count the number of M36 hits for each strain
-grep ">" M36.hits.aa.fa | cut -d\| -f1 | sed 's/>//' | sort | uniq -c > M36_counts.txt
+grep ">" M36.hits.aa.fa M36_pangen_IDs.txt
