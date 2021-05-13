@@ -9,7 +9,7 @@ parser.add_argument('-t','--hmmer',help='HMMSEARCH domtblout file',
                     required=True, type=argparse.FileType('r') )
 
 parser.add_argument('-g','--ignore',help='Loci to ignore because they are part of a previous run',
-                    required=True, type=argparse.FileType('r') )
+                    required=False, type=argparse.FileType('r') )
 
 parser.add_argument('-w','--genewidth',help='How many flanking genes to include',
                     default=2,
