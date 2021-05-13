@@ -8,6 +8,13 @@ parser.add_argument('-i','--input',help='Input GenBank file',required=True)
 parser.add_argument('-t','--hmmer',help='HMMSEARCH domtblout file',
                     required=True, type=argparse.FileType('r') )
 
+parser.add_argument('-g','--ignore',help='Loci to ignore because they are part of a previous run',
+                    required=True, type=argparse.FileType('r') )
+
+parser.add_argument('-w','--genewidth',help='How many flanking genes to include',
+                    default=2,
+                    required=False)
+
 parser.add_argument('-o','--outdir',help='Output folder',
                     default="query_loci",
                     required=False)
@@ -43,6 +50,13 @@ for line in args.hmmer:
 target_genes = sorted(target_genes)
 print(target_genes)
 
+if args.ignore:
+    for line in args.ignore:
+        line = line.strip()
+        print("skipping {}".format(line))
+        if line in target_genes:
+            target_genes.remove(line)
+
 if not os.path.exists(args.outdir):
     os.mkdir(args.outdir)
 
@@ -50,12 +64,15 @@ gb = SeqIO.index_db(args.input +".idx",args.input, "genbank")
 
 for seqname in gb:
     description = gb[seqname].description
-    print(description)
     found_genes = []
     i = 0
-    t0 = time.time()
-    fcount = len(gb[seqname].features)
     gene_features = []
+
+    if args.debug:
+        print(description)
+        t0 = time.time()
+        fcount = len(gb[seqname].features)
+
     for feature in gb[seqname].features:
         if feature.type == "gene":
             gene_features.append(feature)
@@ -69,15 +86,14 @@ for seqname in gb:
         print("-->time took {} out of {} records = {} 1000 r/s".
               format(total,fcount,1000 * total/fcount))
         print("total gene features {}".format(len(gene_features)))
-    i = 0
-    if args.debug:
         print("found_genes are {}".format(found_genes))
+
     # build flanking locus
     for idx,targetlocus in found_genes:
         locus_flank = []
         maxgeneidx = len(gene_features)
-        print("max geneidx id ",maxgeneidx)
-        for ii in range(idx-2,idx+3):
+
+        for ii in range(idx-args.genewidth,idx+args.genewidth+1):
             if ii >= 0 and ii <= maxgeneidx:
                 locus_flank.append(gene_features[ii])
 
