@@ -16,4 +16,7 @@ ln -s $INDIR/*/update_results/*.gbk strains/
 module load cblaster
 module load diamond
 module load parallel
+
 parallel -j $CPU cblaster makedb {} -n DMND/{/.}_ref ::: $(ls strains/*.gbk)
+
+parallel -j $CPU ./scripts/gbk2pepfasta.py -i {} ::: $(ls strains/*.gbk)
