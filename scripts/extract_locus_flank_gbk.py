@@ -103,4 +103,6 @@ for seqname in gb:
                     locus_flank[-1].location.end)
         region = gb[seqname][left:right]
         outfile = os.path.join(args.outdir,"{}.gbk".format(targetlocus))
-        SeqIO.write(region,outfile,"genbank")
+        print('region is {}'.format(region))
+        if region:
+            SeqIO.write(region,outfile,"genbank")
