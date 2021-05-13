@@ -45,15 +45,16 @@ for seqname in gb:
                         newlocus = "{}.{}".format(locus,m.group(1))
 
                 if not newlocus:
-                   if locus in locuscounts:
-                       locuscounts[locus] += 1
-                       newlocus = "{}.{}".format(locus,locuscounts[locus])
-                   else:
-                       locuscounts[locus] = 1
-                desc = "[location={}:{}..{}]".format(
-                    seqname,feature.location.start, feature.location.end)
+                    if locus in locuscounts:
+                        locuscounts[locus] += 1
+                        newlocus = "{}.{}".format(locus,locuscounts[locus])
+                    else:
+                        newlocus = locus
+                        locuscounts[locus] = 1
+                        desc = "{}:{}..{}".format(
+                        seqname,feature.location.start, feature.location.end)
                 if args.debug:
-                    print ("desc = {} id={}".format(desc,locus))
+                    print ("desc = {} id={}".format(desc,newlocus))
                 pepseq = SeqRecord(
                     seq=Seq(cdsseq),
                     id=newlocus,description=desc)
