@@ -40,14 +40,14 @@ for seqname in gb:
                 locus  = feature.qualifiers['locus_tag'][0]
                 newlocus = ""
                 if 'product' in feature.qualifiers:
-                    m = re.search(r'variant (\d+)$',feature.qualifiers['product'][0])
+                    m = re.search(r'(isoform|variant) (\d+)$',feature.qualifiers['product'][0])
                     if m:
-                        newlocus = "{}.{}".format(locus,m.group(1))
+                        newlocus = "{}-T{}".format(locus,m.group(2))
 
                 if not newlocus:
                     if locus in locuscounts:
                         locuscounts[locus] += 1
-                        newlocus = "{}.{}".format(locus,locuscounts[locus])
+                        newlocus = "{}-T{}".format(locus,locuscounts[locus])
                     else:
                         newlocus = locus
                         locuscounts[locus] = 1
