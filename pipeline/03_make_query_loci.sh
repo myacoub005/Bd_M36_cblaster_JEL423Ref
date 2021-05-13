@@ -11,7 +11,7 @@ for domain in $(ls $DB/*.hmm); do
 	for refgenome in $(ls $DB/*.gbff);
 	do
 		hmmout=$OUTDIR/$(basename $refgenome .gbff).pep.${pfam}.tab
-		./scripts/extract_locus_flank_gbk.py -i $refgenome -t $hmmout -g ignore.txt
+		./scripts/extract_locus_flank_gbk.py -i $refgenome -t $hmmout
 		#./scripts/extract_locus_flank_gbk.py -i $refgenome -t $hmmout -g ignore.txt
 	done
 done
