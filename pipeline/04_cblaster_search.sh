@@ -16,11 +16,7 @@ run_cblaster() {
 
 	if [ ! -f $outfile.count.txt ]; then
 		cblaster search -m local -d $db -qf $qfile -me 1e-100 \
-			-o $outfile.count.txt -ode ","
-	fi
-	if [ ! -f $outfile.binary.txt ]; then
-		cblaster search -m local -d $db -qf $qfile -me 1e-100 \
-			-o $outfile.binary.txt -bde ","
+			-o $outfile.count.txt -ode "," -bde "," -b $outfile.binary.txt
 	fi
 }
 
@@ -36,6 +32,6 @@ mkdir -p $OUT
 for q in $(ls query_loci/*.gbk)
 do
 	qname=$(basename $q .gbk)
-	parallel -j $CPU run_cblaster DMND/{/.}_ref.dmnd $q $OUT/{/.}.${qname}.output ::: $(ls strains/*.gbk)
+	parallel -j $CPU run_cblaster DMND/{/.}_ref.dmnd $q $OUT/{/.}__${qname} ::: $(ls strains/*.gbk)
 
 done
