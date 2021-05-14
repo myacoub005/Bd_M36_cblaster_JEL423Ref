@@ -20,41 +20,42 @@ if args.ext[0] != ".":
 clusters = {}
 strainclusters = {}
 
-for fname in os.listdir(args.indir):
-    if fname.endswith(args.ext):
-        stem = re.sub(args.ext,'',fname)
-        nameparse = re.split(r'__',stem)
-        genename = nameparse.pop()
-        strain   = ".".join(nameparse)
-        if args.debug:
-            print("strain is {} gene is {} in {}".format(strain,genename,fname))
-        if genename not in clusters:
-            clusters[genename] = {}
+for strain in os.listdir(args.indir):
+    straindir = os.path.join(args.indir,strain)
+    if os.path.isdir(straindir):
         if strain not in strainclusters:
             strainclusters[strain] = {}
-        if strain in clusters[genename]:
-            print("warning already seen strain {} and gene {}".format(strain,genename))
-        with open(os.path.join(args.indir,fname),"r") as fh:
-            besthit = []
-            process = 0
-            for line in fh:
-                if line.startswith("Cluster "):
+
+        for fname in os.listdir(straindir):
+            if fname.endswith(args.ext):
+                genename = re.sub(args.ext,'',fname)
+                if args.debug:
+                    print("strain is {} gene is {} in {}".format(strain,genename,fname))
+                if genename not in clusters:
+                    clusters[genename] = {}
+                if strain in clusters[genename]:
+                    print("warning already seen strain {} and gene {}".format(strain,genename))
+                with open(os.path.join(straindir,fname),"r") as fh:
+                    besthit = []
                     process = 0
-                elif line.startswith("Query,"):
-                    process = 1
-                elif len(line) > 1 and process:
-                    row = line.split(",")
-                    gname = row[0]
-                    hname = row[1]
-                    ident = row[2]
-                    coverage = row[3]
-                    evalue   = row[4]
-                    if gname == genename:
-                        if not besthit or besthit[1] < ident:
-                            besthit = [hname,ident,coverage,evalue]
-            if len(besthit):
-                clusters[genename][strain]              = besthit[0]
-                strainclusters[strain][besthit[0]] = genename
+                    for line in fh:
+                        if line.startswith("Cluster "):
+                            process = 0
+                        elif line.startswith("Query,"):
+                            process = 1
+                        elif len(line) > 1 and process:
+                            row = line.split(",")
+                            gname = row[0]
+                            hname = row[1]
+                            ident = row[2]
+                            coverage = row[3]
+                            evalue   = row[4]
+                            if gname == genename:
+                                if not besthit or besthit[1] < ident:
+                                    besthit = [hname,ident,coverage,evalue]
+                    if len(besthit):
+                        clusters[genename][strain]              = besthit[0]
+                        strainclusters[strain][besthit[0]] = genename
 
 with open(args.outfile,"w") as ofh:
     for strain in strainclusters:

@@ -13,10 +13,8 @@ for domain in $(ls $DB/*.hmm); do
 	do
 		hmmout=$OUTDIR/$(basename $genome .gbk).pep.${pfam}.tab
 		echo "$hmmout $genome"
+		./scripts/gather_cblaster_clusters.py
 		./scripts/extract_locus_flank_gbk.py -i $genome -t $hmmout -g ignore.txt
 		bash pipeline/04_cblaster_search.sh 
-		./scripts/gather_cblaster_clusters.py
-		#./scripts/extract_locus_flank_gbk.py -i $refgenome -t $hmmout -g ignore.txt
-		break
 	done
 done

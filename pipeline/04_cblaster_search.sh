@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p short -N 1 -n 32 --mem 64gb --out logs/cblaster_search.log
+#SBATCH -p short -N 1 -n 48 --mem 64gb --out logs/cblaster_search.log
 
 module unload miniconda2
 module load miniconda3
@@ -29,9 +29,11 @@ fi
 INDIR=strains
 OUT=results/cblaster
 mkdir -p $OUT
+parallel -j $CPU mkdir -p $OUT/{/.} ::: $(ls strains/*.gbk)
+
 for q in $(ls query_loci/*.gbk)
 do
 	qname=$(basename $q .gbk)
-	parallel -j $CPU run_cblaster DMND/{/.}_ref.dmnd $q $OUT/{/.}__${qname} ::: $(ls strains/*.gbk)
+	parallel -j $CPU run_cblaster DMND/{/.}_ref.dmnd $q $OUT/{/.}/${qname} ::: $(ls strains/*.gbk)
 
 done
